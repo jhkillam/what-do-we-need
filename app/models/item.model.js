@@ -4,6 +4,7 @@ module.exports = mongoose => {
         mongoose.Schema(
             {
                 itemName: String,
+                store: String,
                 purchased: Boolean
             },
             { timestamps: true }

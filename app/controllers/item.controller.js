@@ -9,6 +9,7 @@ exports.create = (req, res) => {
 
     const item = new Item({ 
         itemName: req.body.itemName,
+        store: req.body.store,
         purchased: req.body.purchased ? req.body.purchased : false
     })
 
@@ -82,9 +83,38 @@ exports.update = (req, res) => {
 }
 
 exports.delete = (req, res) => {
-    
+    const id = req.params.id
+
+    Item.findByIdAndRemove(id)
+        .then(data => {
+            if(!data) {
+                res.status(404).send({
+                    message: `Cannot delete Item with id=${id}. Item might not exist.`
+                })
+            } else {
+                res.send({
+                    message: `Item with id=${id} was deleted.`
+                })
+            }
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: "Error deleting Item with id=" + id
+            })
+        })
 }
 
 exports.deleteAll = (req, res) => {
-
+    Item.deleteMany({})
+        .then(data => {
+            res.send({
+                message: `${data.deletedCount} Items were deleted`
+            })
+        })
+        .catch(err => {
+            res.status(500).send({
+                message: 
+                    err.message || "An error occured while attempting to delete all items"
+            })
+        })
 }
